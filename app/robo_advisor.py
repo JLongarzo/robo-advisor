@@ -28,13 +28,13 @@ while(userInput == ""):
         if (hasNumbers(testInput) == True or len(testInput) > 4):
             inputInvalid = True
         else:
-            userInput = testInput
+            userInput = testInput.upper()
     else:
         testInput = input("Expecting a properly-formed stock symbol like 'MSFT'. Please try again: ")
         if (hasNumbers(testInput) == True or len(testInput) > 4):
             inputInvalid = True
         else:
-            userInput = testInput
+            userInput = testInput.upper()
 
 
 
@@ -109,6 +109,34 @@ print("-------------------------")
 
 
 
+spyUrl = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=spy&outputsize=full&apikey={apiKey}"
+
+
+spyResponse = requests.get(spyUrl).json()
+
+
+spyClosePrices = []
+spyDates = []
+
+z = 0
+for x, y in spyResponse['Time Series (Daily)'].items():
+    if z < 21:
+        spyDates.append(x)
+        spyClosePrices.append(float(y['4. close']))
+    z = z + 1
+
+
+
+
+
+spyPercentIncreaseMonth = (spyClosePrices[0] - spyClosePrices[20])/spyClosePrices[20]
+print('spyPercentIncreaseMonth: ', spyPercentIncreaseMonth)
+
+userStockPercentIncreaseMonth = (closePrices[0]-closePrices[20])/closePrices[20]
+print('userStockPercentIncreaseMonth', userStockPercentIncreaseMonth)
+
+print(f"{userInput} HAS INCREASED {str(round(userStockPercentIncreaseMonth*100, 2))}% THIS MONTH")
+print(f"THE S&P 500 HAS INCREASED {str(round(spyPercentIncreaseMonth*100, 2))}% THIS MONTH")
 
 print("RECOMMENDATION: BUY!")
 print("RECOMMENDATION REASON: TODO")
