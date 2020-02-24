@@ -106,7 +106,7 @@ print(f"LATEST CLOSE: {latestClose}")
 print(f"52 WEEK HIGH: {annualHigh}")
 print(f"52 WEEK LOW: {annualLow}")
 print("-------------------------")
-
+print("COMPUTING RECOMENDATION... PLEASE WAIT...")
 
 
 spyUrl = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=spy&outputsize=full&apikey={apiKey}"
@@ -128,18 +128,35 @@ for x, y in spyResponse['Time Series (Daily)'].items():
 
 
 
-
-spyPercentIncreaseMonth = (spyClosePrices[0] - spyClosePrices[20])/spyClosePrices[20]
-print('spyPercentIncreaseMonth: ', spyPercentIncreaseMonth)
-
+#computes monthly change for user's stock
 userStockPercentIncreaseMonth = (closePrices[0]-closePrices[20])/closePrices[20]
-print('userStockPercentIncreaseMonth', userStockPercentIncreaseMonth)
 
-print(f"{userInput} HAS INCREASED {str(round(userStockPercentIncreaseMonth*100, 2))}% THIS MONTH")
-print(f"THE S&P 500 HAS INCREASED {str(round(spyPercentIncreaseMonth*100, 2))}% THIS MONTH")
+#computes monthly change for s&p 500
+spyPercentIncreaseMonth = (spyClosePrices[0] - spyClosePrices[20])/spyClosePrices[20]
 
-print("RECOMMENDATION: BUY!")
-print("RECOMMENDATION REASON: TODO")
+#must test if the stock increased or decreased
+
+userIncDec = "DECREASED"
+if (userStockPercentIncreaseMonth > 0):
+    userIncDec = "INCREASED"
+
+spyIncDec = "DECREASED"
+if (spyPercentIncreaseMonth > 0):
+    spyIncDec = "INCREASED"
+
+recommendation = "BUY!"
+reason = f"{userInput} IS UNDERPERFORMING THE MARKET"
+if(spyPercentIncreaseMonth < userStockPercentIncreaseMonth):
+    recommendation = "SELL!, DONT BUY THE STOCK!"
+    reason = f"{userInput} IS OVERPERFORMING THE MARKET"
+
+
+
+print(f"{userInput} HAS {userIncDec} {str(round(userStockPercentIncreaseMonth*100, 2))}% THIS MONTH")
+print(f"THE S&P 500 HAS {spyIncDec} {str(round(spyPercentIncreaseMonth*100, 2))}% THIS MONTH")
+
+print(f"RECOMMENDATION: {recommendation}")
+print(f"RECOMMENDATION REASON: {reason}")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
