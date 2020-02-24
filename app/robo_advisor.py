@@ -3,6 +3,7 @@ import time
 import requests
 import os
 from dotenv import load_dotenv 
+import pandas
 
 load_dotenv()
 
@@ -24,7 +25,7 @@ userInput = ""
 
 while(userInput == ""):
     if inputInvalid == False:
-        testInput = input("Please input a stock ticker: ")
+        testInput = input("Please input a stock ticker like TSLA. Have fun Investing!: ")
         if (hasNumbers(testInput) == True or len(testInput) > 4):
             inputInvalid = True
         else:
@@ -160,3 +161,28 @@ print(f"RECOMMENDATION REASON: {reason}")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
+
+#found this function here https://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
+def get_parent_dir(directory):
+    import os
+    return os.path.dirname(directory)
+
+
+def write_to_csv(csvData):
+	dataPath = get_parent_dir(os.getcwd()) + "/data/"
+	csvData.to_csv(dataPath + "prices_" + userInput + ".csv")
+
+
+csvData = pandas.DataFrame({
+		'Time': dates,
+		'Opening Price': openPrices,
+		'High Price': highPrices,
+		'Low Price': lowPrices,
+		'Closing Price': closePrices,
+		'Volume': dailyVolumes
+		})
+
+write_to_csv(csvData)
+
+
+
