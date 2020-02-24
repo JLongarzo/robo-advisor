@@ -27,13 +27,19 @@ print("Please input a series of tickers like TSLA or NVDA.")
 print("Feel free to input as many tickers as you like one at a time")
 print("--------------------------------------------------")
 
-userInput = input("Input DONE to finish. Have fun Investing!: ")
+enteredLoop = False
+
+firstInput = "Input DONE to finish. Have fun Investing!: "
+secondaryInput = "Would you like to input another ticker? If not, input DONE: "
+
+userInput = ""
 
 while(userInput != "DONE"):
+    inputStatement = secondaryInput if enteredLoop else firstInput
+
     if inputInvalid == False:
-        testInput = input("Would you like to input another ticker? If not, input DONE: ")
+        testInput = input(inputStatement)
         if (testInput == "DONE"):
-            userInput = "DONE"
             break
         elif (hasNumbers(testInput) == True or len(testInput) > 4):
             inputInvalid = True
@@ -44,14 +50,16 @@ while(userInput != "DONE"):
     else:
         testInput = input("Expecting a properly-formed stock symbol like 'MSFT'. Please try again: ")
         if (testInput == "DONE"):
-            userInput == "DONE"
             break
         elif (hasNumbers(testInput) == True or len(testInput) > 4):
             inputInvalid = True
         else:
             userInput = testInput.upper()
             allUserInputs.append(userInput)
-            inputInvalid = False
+    enteredLoop = True
+
+
+
 
 t = time.localtime()
 currentTime = time.strftime("%I:%m %p", t)
@@ -223,21 +231,22 @@ def get_parent_dir(directory):
     return os.path.dirname(directory)
 
 
-def write_to_csv(csvData):
+def write_to_csv(csvData, ndx):
 	dataPath = get_parent_dir(os.getcwd()) + "/data/"
-	csvData.to_csv(dataPath + "prices_" + userInput + ".csv")
+	csvData.to_csv(dataPath + "prices_" + allUserInputs[ndx] + ".csv")
 
+ndx = 0
+while (len(allUserInputs) > ndx):
+    StockData = allStockData[ndx]
 
-csvData = pandas.DataFrame({
-		'Time': dates,
-		'Opening Price': openPrices,
-		'High Price': highPrices,
-		'Low Price': lowPrices,
-		'Closing Price': closePrices,
-		'Volume': dailyVolumes
-		})
+    csvData = pandas.DataFrame({
+            'Time': StockData["dates"],
+            'Opening Price': StockData["openPrices"],
+            'High Price': StockData["highPrices"],
+            'Low Price': StockData["lowPrices"],
+            'Closing Price': StockData["closePrices"],
+            'Volume': StockData["dailyVolumes"]
+            })
 
-write_to_csv(csvData)
-
-
-
+    write_to_csv(csvData, ndx)
+    ndx = ndx + 1
