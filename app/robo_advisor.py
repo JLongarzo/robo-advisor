@@ -33,14 +33,13 @@ while(userInput != "DONE"):
     if inputInvalid == False:
         testInput = input("Would you like to input another ticker? If not, input DONE: ")
         if (testInput == "DONE"):
-            userInput == "DONE"
+            userInput = "DONE"
             break
         elif (hasNumbers(testInput) == True or len(testInput) > 4):
             inputInvalid = True
         else:
             userInput = testInput.upper()
             allUserInputs.append(userInput)
-            inputInvalid = False
 
     else:
         testInput = input("Expecting a properly-formed stock symbol like 'MSFT'. Please try again: ")
@@ -52,6 +51,7 @@ while(userInput != "DONE"):
         else:
             userInput = testInput.upper()
             allUserInputs.append(userInput)
+            inputInvalid = False
 
 t = time.localtime()
 currentTime = time.strftime("%I:%m %p", t)
