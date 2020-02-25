@@ -10,8 +10,6 @@ Download the code using GitHub desktop
 
 
 
-Download the code using GitHub desktop
-
 ## Setup
 
 Navigate to the project directory
