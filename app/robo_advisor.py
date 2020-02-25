@@ -4,6 +4,8 @@ import requests
 import os
 from dotenv import load_dotenv 
 import pandas
+import matplotlib.pyplot as plt
+
 
 load_dotenv()
 
@@ -100,7 +102,15 @@ while (len(allUserInputs) > ndx):
     allResponses.append(parsedResponse)
     ndx = ndx + 1
 
-
+ndx = 0
+try:
+    while (len(allUserInputs) > ndx):
+        testResponse = allResponses[ndx]['Time Series (Daily)']
+        ndx = ndx + 1
+except:
+    print("Hey, I'm sorry, but due to limited resources you have made too many requests.")
+    print("Try inputting less tickers next time. I encourage you to try again!")
+    exit()
 
 
 allStockData = []
@@ -139,18 +149,25 @@ print("-------------------------")
 
 spyUrl = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=spy&outputsize=full&apikey={apiKey}"
 
-
+spyResponse = ""
 spyResponse = requests.get(spyUrl).json()
+
 
 spyClosePrices = []
 spyDates = []
 
 z = 0
-for a, b in spyResponse['Time Series (Daily)'].items():
-    if z < 21:
-        spyDates.append(a)
-        spyClosePrices.append(float(b['4. close']))
-    z = z + 1
+try:
+    for a, b in spyResponse['Time Series (Daily)'].items():
+        if z < 21:
+            spyDates.append(a)
+            spyClosePrices.append(float(b['4. close']))
+        z = z + 1
+except:
+    print("Hey, I'm sorry, but due to limited resources you have made too many requests.")
+    print("Try inputting less tickers next time. I encourage you to try again!")
+    exit()
+
 
 
 #computes monthly change for s&p 500
@@ -249,4 +266,30 @@ while (len(allUserInputs) > ndx):
             })
 
     write_to_csv(csvData, ndx)
+    ndx = ndx + 1
+
+annualArray = []
+ndx = 1
+while ndx <= 253:
+    annualArray.append(ndx)
+    ndx = ndx + 1
+
+
+ndx = 0
+while (len(allUserInputs) > ndx):
+    StockData = allStockData[ndx]
+    pricesArray = StockData["closePrices"]
+    datesArray = StockData["dates"]
+
+    innerNdx = len(pricesArray) - 1
+    finalPricesArray = []
+    while len(finalPricesArray) < len(pricesArray):
+        finalPricesArray.append(pricesArray[innerNdx])
+        innerNdx = innerNdx - 1
+
+
+    plt.plot(annualArray, finalPricesArray)
+    plt.ylabel(f"{allUserInputs[ndx]}  Prices")
+    plt.xlabel("past year of trading days")
+    plt.show()
     ndx = ndx + 1
