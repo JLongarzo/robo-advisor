@@ -3,6 +3,11 @@ language: python
 python:
   - "3.7"
 install:
-  - pip install requirements.txt
+  - pip install requests
+  - pip install python-dotenv
+  - pip install pandas
+  - pip install matplotlib
+  - pip install pytest
+
 script:
   - pytest
